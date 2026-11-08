@@ -1,0 +1,289 @@
+{
+  "users": [
+    {
+      "id": "user-student-1",
+      "fullName": "Bilal Ahmed",
+      "email": "bilal.student@uniassist.edu",
+      "role": "student",
+      "department": "Computer Science",
+      "university": "UniAssist Metropolitan University",
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "user-faculty-1",
+      "fullName": "Dr. Sarah Mitchell",
+      "email": "s.mitchell@uniassist.edu",
+      "role": "faculty",
+      "department": "Electrical & Computer Engineering",
+      "university": "UniAssist Metropolitan University",
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "user-admin-1",
+      "fullName": "Academic Affairs Admin",
+      "email": "admin@uniassist.edu",
+      "role": "admin",
+      "department": "Office of the Registrar",
+      "university": "UniAssist Metropolitan University",
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-sample-1",
+      "userId": "user-student-1",
+      "title": "Fall 2026 Examination & Grading Policy",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:42:53.210Z",
+      "messageCount": 3,
+      "lastMessageSnippet": "What are the tuition fees and payment deadlines for Fall 2026?"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1",
+      "conversationId": "conv-sample-1",
+      "role": "user",
+      "content": "What are the examination rules and the passing percentage for my courses?",
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "msg-2",
+      "conversationId": "conv-sample-1",
+      "role": "assistant",
+      "content": "According to the official **University Examination Regulations & Grading Policy (Fall 2026)**:\n\n1. **Passing Grade**: The minimum passing grade is **Grade D** (50% to 59%, GPA 1.00). Marks below 50% result in an **F** grade (GPA 0.00).\n2. **Attendance Rule**: You must maintain at least **75% attendance** in lectures and laboratory sessions. Falling below 75% without authorized medical leave leads to being barred from the final exam and receiving an automatic 'F'.\n3. **Missed Exams**: Missed exams are not automatically rescheduled. A formal petition along with medical proof must be submitted to the Controller of Examinations within **7 calendar days**.\n4. **Academic Integrity**: Cheating or carrying unauthorized electronics leads to paper cancellation and potential suspension or expulsion.",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "isVerifiedAcademic": true,
+      "citations": [
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 1,
+          "section": "Section 1: Grading Scale",
+          "excerpt": "Grade D: 50% to 59% (GPA 1.00, Minimum Passing). Grade F: Below 50% (GPA 0.00, Fail)...",
+          "relevanceScore": 0.94
+        },
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 2,
+          "section": "Section 2: Attendance Requirements",
+          "excerpt": "Students must maintain a minimum attendance of 75% in lectures and laboratory sessions...",
+          "relevanceScore": 0.88
+        }
+      ]
+    },
+    {
+      "conversationId": "conv-sample-1",
+      "role": "user",
+      "content": "What are the tuition fees and payment deadlines for Fall 2026?",
+      "language": "en",
+      "id": "msg-1793972573210-ute9l",
+      "createdAt": "2026-11-06T13:42:53.210Z"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-1",
+      "title": "University Examination Regulations & Grading Policy (Fall 2026)",
+      "category": "Examination Policies",
+      "fileName": "examination_regulations_2026.pdf",
+      "fileSize": 1927,
+      "status": "indexed",
+      "version": 1,
+      "chunkCount": 2,
+      "uploadedBy": "user-admin-1",
+      "uploaderName": "Office of the Registrar",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "doc-2",
+      "title": "Tuition Fee Structure, Payment Schedules & Merit Scholarships (2026-2027)",
+      "category": "Fee Structure",
+      "fileName": "tuition_scholarships_2026.pdf",
+      "fileSize": 1532,
+      "status": "indexed",
+      "version": 1,
+      "chunkCount": 1,
+      "uploadedBy": "user-admin-1",
+      "uploaderName": "Office of the Registrar",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "doc-3",
+      "title": "Department of Computer Science - BSCS Curriculum & Course Outlines",
+      "category": "Course Outlines",
+      "fileName": "bscs_curriculum_outline_2026.pdf",
+      "fileSize": 1633,
+      "status": "indexed",
+      "version": 1,
+      "chunkCount": 1,
+      "uploadedBy": "user-admin-1",
+      "uploaderName": "Office of the Registrar",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "doc-4",
+      "title": "Undergraduate Admissions Guidelines & Eligibility Requirements (2026)",
+      "category": "Admissions",
+      "fileName": "admissions_guidelines_2026.pdf",
+      "fileSize": 1427,
+      "status": "indexed",
+      "version": 1,
+      "chunkCount": 1,
+      "uploadedBy": "user-admin-1",
+      "uploaderName": "Office of the Registrar",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "id": "doc-5",
+      "title": "Campus Code of Conduct, Library Rules & Student Services Guide",
+      "category": "Student Handbook",
+      "fileName": "student_handbook_campus_guide_2026.pdf",
+      "fileSize": 1342,
+      "status": "indexed",
+      "version": 1,
+      "chunkCount": 1,
+      "uploadedBy": "user-admin-1",
+      "uploaderName": "Office of the Registrar",
+      "createdAt": "2026-11-06T13:35:06.555Z",
+      "updatedAt": "2026-11-06T13:35:06.555Z"
+    }
+  ],
+  "documentChunks": [
+    {
+      "id": "doc-1-chunk-0",
+      "documentId": "doc-1",
+      "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+      "category": "Examination Policies",
+      "chunkIndex": 0,
+      "chunkText": "UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent) - Grade B+: 80% to 84% (GPA 3.50, Very Good) - Grade B: 70% to 79% (GPA 3.00, Good) - Grade C+: 65% to 69% (GPA 2.50, Above Average) - Grade C: 60% to 64% (GPA 2.00, Average) - Grade D: 50% to 59% (GPA 1.00, Minimum Passing) - Grade F: Below 50% (GPA 0.00, Fail) A cumulative GPA (CGPA) of at least 2.00 is required for undergraduate degree conferral, and 3.00 for graduate degree conferral. Page 2 - Section 2: Attendance Requirements & Barred Students Students must maintain a minimum attendance of 75% in lectures and laboratory sessions for each registered course. Any student whose attendance falls below 75% without authorized medical leave will be barred from appearing in the final examination and will receive an automatic 'F' grade for that course. Page 3 - Section 3: Missed Examinations & Makeup Policy Missed midterm or final exams are not automatically rescheduled. A student who missed an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed exam. Makeup exams carry a 10% penalty unless waived by the University Academic Board for extraordinary circumstances.",
+      "pageNumber": 4
+    },
+    {
+      "id": "doc-1-chunk-1",
+      "documentId": "doc-1",
+      "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+      "category": "Examination Policies",
+      "chunkIndex": 1,
+      "chunkText": "an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed exam. Makeup exams carry a 10% penalty unless waived by the University Academic Board for extraordinary circumstances. Page 4 - Section 4: Academic Integrity, Cheating & Plagiarism The University maintains a strict zero-tolerance policy against academic dishonesty. Possession of unauthorized electronic devices, notes, or whispering during examinations results in immediate confiscation of materials, expulsion from the exam hall, and referral to the Disciplinary Committee. Penalties range from cancellation of the paper to suspension for two semesters or permanent expulsion.",
+      "pageNumber": 4
+    },
+    {
+      "id": "doc-2-chunk-0",
+      "documentId": "doc-2",
+      "documentTitle": "Tuition Fee Structure, Payment Schedules & Merit Scholarships (2026-2027)",
+      "category": "Fee Structure",
+      "chunkIndex": 0,
+      "chunkText": "OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 credit hours). - Business Administration & Social Sciences: $2,800 per semester. - Laboratory fee (Computing/Eng): $150 per lab course. - Health insurance and student activity levy: $85 per semester. Page 2 - Section 2: Payment Deadlines & Installment Options Fall Semester: - First installment (60%): Due by September 15, 2026. - Second installment (40%): Due by October 30, 2026. Late Fee Penalty: A flat fine of $50 is applied after the deadline. Accounts unpaid by mid-terms will result in withholding of LMS and exam access. Page 3 - Section 3: Merit-Based Scholarships The University rewards academic excellence: - Chancellor's Honor Scholarship: 100% tuition waiver for semester GPA of 3.90 or above (minimum 15 credits). - Dean's Merit Scholarship: 50% tuition waiver for semester GPA of 3.75 - 3.89. - Departmental Honors: 25% tuition waiver for semester GPA of 3.50 - 3.74. Merit scholarships are evaluated and renewed at the end of each semester automatically based on official registrar transcripts. Page 4 - Section 4: Need-Based Financial Assistance Students facing genuine financial distress may apply for Need-Based Financial Aid through the Financial Aid Office before August 25 for Fall semester, and December 20 for Spring semester. Proof of family income and bank statements are required.",
+      "pageNumber": 4
+    },
+    {
+      "id": "doc-3-chunk-0",
+      "documentId": "doc-3",
+      "documentTitle": "Department of Computer Science - BSCS Curriculum & Course Outlines",
+      "category": "Course Outlines",
+      "chunkIndex": 0,
+      "chunkText": "DEPARTMENT OF COMPUTER SCIENCE - BSCS DEGREE CURRICULUM Page 1 - Section 1: Degree Overview & Credit Hour Requirements The Bachelor of Science in Computer Science (BSCS) is a 4-year (8 semesters) accredited degree program requiring completion of 134 credit hours. Categories: - Computing Core: 42 credit hours - CS Major Core: 24 credit hours - CS Technical Electives: 18 credit hours - General Education & Humanities: 30 credit hours - Final Year Project (FYP): 6 credit hours (FYP-I in 7th semester, FYP-II in 8th semester) Page 2 - Section 2: Core Course Descriptions & Prerequisites - CS101 Introduction to Computing & Programming (3 Cr, Pre-req: None): Variables, control structures, loops, functions, Python syntax, basic algorithmic complexity. - CS201 Data Structures & Algorithms (4 Cr, Pre-req: CS101): Linked lists, stacks, queues, binary search trees, AVL trees, graphs, sorting algorithms, big-O notation. - CS305 Operating Systems (3 Cr, Pre-req: CS201): Process scheduling, concurrency, semaphores, deadlocks, virtual memory management, file systems. - CS410 Artificial Intelligence & Machine Learning (3 Cr, Pre-req: CS201, MATH202 Linear Algebra): Search algorithms (A*, minimax), supervised learning, neural networks, loss functions, prompt engineering, and RAG concepts. Page 3 - Section 3: Final Year Project (FYP) Regulations Students must form groups of 2 to 3 members. Eligibility: Must have completed at least 95 credit hours with a minimum CGPA of 2.20. Proposal Defense takes place by week 3 of the 7th semester. Final demonstration and external thesis defense occur in the last week of the 8th semester.",
+      "pageNumber": 3
+    },
+    {
+      "id": "doc-4-chunk-0",
+      "documentId": "doc-4",
+      "documentTitle": "Undergraduate Admissions Guidelines & Eligibility Requirements (2026)",
+      "category": "Admissions",
+      "chunkIndex": 0,
+      "chunkText": "UNDERGRADUATE ADMISSIONS POLICIES & ELIGIBILITY CRITERIA 2026-2027 Page 1 - Section 1: General Eligibility Requirements Applicants seeking admission to undergraduate programs must satisfy the following: - Minimum 60% unadjusted marks in Higher Secondary School Certificate (HSSC / Intermediate) or equivalent British A-Levels (with at least 3 principal subjects). - For Engineering and Computer Science: Mathematics and Physics are mandatory prerequisites at intermediate/A-Level. Page 2 - Section 2: Standardized Entrance Testing Applicants must take either: - The University Entrance Assessment (UEA) with a minimum qualifying score of 50%. - National Aptitude Test (NAT) with a composite score of 60 or above. - SAT-I with a minimum score of 1150 (Math minimum 600). Page 3 - Section 3: Key Admission Dates & Deadlines - Online Application Portal Opens: June 1, 2026 - Application Submission Deadline: July 15, 2026 at 11:59 PM - Entrance Test Dates: July 22 to July 26, 2026 - First Merit List Declaration: August 5, 2026 - Fee Payment for 1st Merit List: August 12, 2026 - Orientation Week: September 1 to September 5, 2026 - Commencement of Classes: September 8, 2026 Page 4 - Section 4: Required Documentation Candidates must upload scanned copies of: Matric/O-Level certificate, HSSC/A-Level transcripts, National Identity Card or Form-B, 4 recent passport photos with blue background, and Entrance Test admit card.",
+      "pageNumber": 4
+    },
+    {
+      "id": "doc-5-chunk-0",
+      "documentId": "doc-5",
+      "documentTitle": "Campus Code of Conduct, Library Rules & Student Services Guide",
+      "category": "Student Handbook",
+      "chunkIndex": 0,
+      "chunkText": "CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extended 24/7 study halls operate during midterm and final exam weeks. - Undergraduate students may borrow up to 4 books for a duration of 14 days. Renewal is permitted twice if no holds are placed. - Overdue fine: $1 per book per day. - Quiet zones are designated on the 2nd and 3rd floors; mobile phone calls are strictly prohibited inside study zones. Page 2 - Section 2: Campus Safety & ID Card Policy Every student, faculty member, and staff must visibly wear the University Smart Identity Card at all entry checkpoints and on campus premises. Loss of card must be reported to Campus Security immediately. Replacement card fee is $20. Page 3 - Section 3: Harassment, Discrimination & Grievance Redressal The University enforces a Zero-Tolerance Harassment Policy under national higher education guidelines. Any form of physical, verbal, digital, or sexual harassment is subject to immediate inquiry by the Harassment Redressal Cell. Anonymous reporting is accessible via the student portal or by emailing anti-harassment@uniassist.edu. All investigations are concluded within 30 working days with strict confidentiality.",
+      "pageNumber": 3
+    }
+  ],
+  "savedResponses": [
+    {
+      "id": "saved-1",
+      "userId": "user-student-1",
+      "messageId": "msg-2",
+      "query": "What are the examination rules and the passing percentage for my courses?",
+      "answer": "The minimum passing grade is Grade D (50% to 59%, GPA 1.00)...",
+      "citations": [
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 1,
+          "section": "Section 1: Grading Scale",
+          "excerpt": "Grade D: 50% to 59% (GPA 1.00, Minimum Passing). Grade F: Below 50% (GPA 0.00, Fail)...",
+          "relevanceScore": 0.94
+        },
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 2,
+          "section": "Section 2: Attendance Requirements",
+          "excerpt": "Students must maintain a minimum attendance of 75% in lectures and laboratory sessions...",
+          "relevanceScore": 0.88
+        }
+      ],
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    }
+  ],
+  "studyPlans": [
+    {
+      "id": "plan-1",
+      "userId": "user-student-1",
+      "title": "Midterm Preparation: Data Structures & Algorithms",
+      "subject": "Computer Science (CS201)",
+      "targetExamDate": "2026-11-20",
+      "progress": 40,
+      "schedule": [
+        {
+          "day": "Monday",
+          "topic": "Binary Search Trees & Tree Traversals",
+          "hours": 2.5,
+          "completed": true
+        },
+        {
+          "day": "Tuesday",
+          "topic": "AVL Tree Rotations & Balance Factors",
+          "hours": 3,
+          "completed": true
+        },
+        {
+          "day": "Wednesday",
+          "topic": "Graph Representations (Adjacency Matrix vs List)",
+          "hours": 2,
+          "completed": false
+        },
+        {
+          "day": "Thursday",
+          "topic": "BFS & DFS Algorithm Tracing",
+          "hours": 2.5,
+          "completed": false
+        },
+        {
+          "day": "Friday",
+          "topic": "Dijkstra Shortest Path & Review Past Papers",
+          "hours": 3,
+          "completed": false
+        }
+      ],
+      "createdAt": "2026-11-06T13:35:06.555Z"
+    }
+  ],
+  "feedback": []
+}

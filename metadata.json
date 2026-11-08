@@ -1,0 +1,6 @@
+{
+  "name": "UniAssist AI",
+  "description": "Your University. Your Knowledge. One AI Assistant. Intelligent academic assistant for students, faculty, and administrators with verified RAG search, study tools, and document intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
