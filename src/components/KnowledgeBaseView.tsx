@@ -5,6 +5,7 @@ import {
   DocumentChunk,
   User,
 } from '../types';
+import { safeFetchJson } from '../utils/api';
 import {
   FileText,
   Upload,
@@ -64,8 +65,7 @@ export const KnowledgeBaseView: React.FC<KnowledgeBaseViewProps> = ({
 
   const fetchDocuments = async () => {
     try {
-      const res = await fetch('/api/documents');
-      const data = await res.json();
+      const data = await safeFetchJson<{ documents: DocumentItem[] }>('/api/documents');
       if (data.documents) {
         setDocuments(data.documents);
       }
@@ -109,18 +109,13 @@ export const KnowledgeBaseView: React.FC<KnowledgeBaseViewProps> = ({
         formData.append('directContent', directContent.trim());
       }
 
-      const res = await fetch('/api/documents/upload', {
+      await safeFetchJson('/api/documents/upload', {
         method: 'POST',
         headers: {
           'x-user-id': currentUser.id,
         },
         body: formData,
       });
-
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.error || 'Upload failed');
-      }
 
       // Reset form
       setUploadTitle('');
@@ -165,8 +160,7 @@ export const KnowledgeBaseView: React.FC<KnowledgeBaseViewProps> = ({
 
   const inspectChunks = async (doc: DocumentItem) => {
     try {
-      const res = await fetch(`/api/documents/${doc.id}`);
-      const data = await res.json();
+      const data = await safeFetchJson<{ chunks: DocumentChunk[] }>(`/api/documents/${doc.id}`);
       if (data.chunks) {
         setInspectingDoc({ doc, chunks: data.chunks });
       }

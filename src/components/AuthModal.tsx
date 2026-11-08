@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, UserRole } from '../types';
+import { safeFetchJson } from '../utils/api';
 import {
   LogIn,
   UserPlus,
@@ -58,16 +59,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
+      const data = await safeFetchJson<{ user: User; error?: string }>('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password }),
       });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to sign in');
-      }
 
       localStorage.setItem('uniassist_user_id', data.user.id);
       onLoginSuccess(data.user);
@@ -92,7 +88,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/register', {
+      const data = await safeFetchJson<{ user: User; error?: string }>('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -104,11 +100,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           password,
         }),
       });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
 
       localStorage.setItem('uniassist_user_id', data.user.id);
       setSuccessMessage('Account created successfully! Signing you in...');
@@ -142,18 +133,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const res = await fetch('/api/auth/login', {
+      const data = await safeFetchJson<{ user: User; error?: string }>('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: demoEmail }),
       });
-      const data = await res.json();
-      if (res.ok && data.user) {
+      if (data.user) {
         localStorage.setItem('uniassist_user_id', data.user.id);
         onLoginSuccess(data.user);
         onClose();
-      } else {
-        throw new Error(data.error || 'Demo login failed');
       }
     } catch (err: any) {
       setErrorMessage(err.message);

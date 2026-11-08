@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, QuizQuestion, StudyPlanItem } from '../types';
+import { safeFetchJson } from '../utils/api';
 import {
   BookOpen,
   Calculator,
@@ -56,10 +57,9 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
   // Load existing study plans
   const fetchPlans = async () => {
     try {
-      const res = await fetch('/api/study/plans', {
+      const data = await safeFetchJson<{ plans: StudyPlanItem[] }>('/api/study/plans', {
         headers: { 'x-user-id': currentUser.id },
       });
-      const data = await res.json();
       if (data.plans) setPlans(data.plans);
     } catch (e) {
       console.error('Failed to load study plans:', e);
@@ -76,12 +76,11 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
     if (!topic.trim()) return;
     setIsExplaining(true);
     try {
-      const res = await fetch('/api/study/explain', {
+      const data = await safeFetchJson<{ explanation: string }>('/api/study/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic, difficulty, subject }),
       });
-      const data = await res.json();
       setExplanationResult(data.explanation);
     } catch (err) {
       console.error(err);
@@ -96,12 +95,11 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
     if (!mathProblem.trim()) return;
     setIsSolvingMath(true);
     try {
-      const res = await fetch('/api/study/math', {
+      const data = await safeFetchJson<{ solution: string }>('/api/study/math', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ problem: mathProblem }),
       });
-      const data = await res.json();
       setMathSolution(data.solution);
     } catch (err) {
       console.error(err);
@@ -118,12 +116,11 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
     setSelectedAnswers({});
     setShowExplanations({});
     try {
-      const res = await fetch('/api/study/quiz', {
+      const data = await safeFetchJson<{ questions: QuizQuestion[] }>('/api/study/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: quizTopic, count: 4 }),
       });
-      const data = await res.json();
       if (data.questions) setQuestions(data.questions);
     } catch (err) {
       console.error(err);
@@ -144,7 +141,7 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
     if (!newPlanSubject.trim()) return;
     setIsCreatingPlan(true);
     try {
-      const res = await fetch('/api/study/plan', {
+      const data = await safeFetchJson<{ plan: StudyPlanItem }>('/api/study/plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +153,6 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
           dailyHours: newPlanHours,
         }),
       });
-      const data = await res.json();
       if (data.plan) {
         setPlans((prev) => [data.plan, ...prev]);
         setNewPlanSubject('');

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { User, AdminAnalytics, DocumentItem } from '../types';
+import { User, AdminAnalytics, DocumentItem, UserRole } from '../types';
+import { safeFetchJson } from '../utils/api';
 import {
   ShieldAlert,
   Users,
@@ -37,28 +38,25 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     setIsLoading(true);
     try {
       // 1. Analytics
-      const resStats = await fetch('/api/admin/dashboard', {
+      const dataStats = await safeFetchJson<{ analytics: AdminAnalytics }>('/api/admin/dashboard', {
         headers: { 'x-user-id': currentUser.id },
       });
-      if (resStats.ok) {
-        const data = await resStats.json();
-        setAnalytics(data.analytics);
+      if (dataStats.analytics) {
+        setAnalytics(dataStats.analytics);
       }
 
       // 2. Users
-      const resUsers = await fetch('/api/admin/users', {
+      const dataUsers = await safeFetchJson<{ users: User[] }>('/api/admin/users', {
         headers: { 'x-user-id': currentUser.id },
       });
-      if (resUsers.ok) {
-        const data = await resUsers.json();
-        setUserList(data.users);
+      if (dataUsers.users) {
+        setUserList(dataUsers.users);
       }
 
       // 3. Documents
-      const resDocs = await fetch('/api/documents');
-      if (resDocs.ok) {
-        const data = await resDocs.json();
-        setDocList(data.documents);
+      const dataDocs = await safeFetchJson<{ documents: DocumentItem[] }>('/api/documents');
+      if (dataDocs.documents) {
+        setDocList(dataDocs.documents);
       }
     } catch (e) {
       console.error('Error fetching admin data:', e);

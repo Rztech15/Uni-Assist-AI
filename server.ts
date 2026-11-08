@@ -606,17 +606,39 @@ app.patch('/api/admin/users/:id/role', (req: Request, res: Response) => {
 });
 
 // -----------------------------------------------------------------------------
+// HEALTH CHECK & API ROUTING SAFEGUARDS
+// -----------------------------------------------------------------------------
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', service: 'UniAssist AI', timestamp: new Date().toISOString() });
+});
+
+// Any unmatched /api route returns JSON 404 (never HTML)
+app.all('/api/*', (_req: Request, res: Response) => {
+  res.status(404).json({ error: 'API route not found' });
+});
+
+// Global error handler ensuring errors always return JSON
+app.use((err: any, _req: Request, res: Response, _next: any) => {
+  console.error('Unhandled server error:', err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+// -----------------------------------------------------------------------------
 // VITE INTEGRATION FOR FULL-STACK APPLICATION
 // -----------------------------------------------------------------------------
 async function startServer() {
   const distPath = path.resolve(process.cwd(), 'dist');
-  if (process.env.NODE_ENV === 'production' && fs.existsSync(distPath)) {
+  const hasBuiltDist = fs.existsSync(distPath) && fs.existsSync(path.resolve(distPath, 'index.html'));
+
+  if (hasBuiltDist) {
+    // Production mode: serve static files from dist
     app.use(express.static(distPath));
-    app.get('*', (_req, res) => {
+    app.get('*', (req: Request, res: Response, next) => {
+      if (req.path.startsWith('/api')) return next();
       res.sendFile(path.resolve(distPath, 'index.html'));
     });
   } else {
-    // Vite dev server middleware
+    // Development mode: Vite dev server middleware
     const { createServer } = await import('vite');
     const vite = await createServer({
       server: { middlewareMode: true },

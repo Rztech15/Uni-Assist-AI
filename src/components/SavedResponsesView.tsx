@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SavedResponse, User, Citation } from '../types';
+import { safeFetchJson } from '../utils/api';
 import {
   Bookmark,
   Search,
@@ -28,10 +29,9 @@ export const SavedResponsesView: React.FC<SavedResponsesViewProps> = ({
 
   const fetchSaved = async () => {
     try {
-      const res = await fetch('/api/saved', {
+      const data = await safeFetchJson<{ savedResponses: SavedResponse[] }>('/api/saved', {
         headers: { 'x-user-id': currentUser.id },
       });
-      const data = await res.json();
       if (data.savedResponses) setSavedItems(data.savedResponses);
     } catch (e) {
       console.error('Failed to load saved responses:', e);

@@ -17,6 +17,7 @@ import { RoleSwitcherModal } from './components/RoleSwitcherModal.tsx';
 import { SettingsModal } from './components/SettingsModal.tsx';
 import { HelpSupportModal } from './components/HelpSupportModal.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
+import { safeFetchJson } from './utils/api.ts';
 
 export default function App() {
   // Current active user
@@ -63,42 +64,47 @@ export default function App() {
     const uid = userIdToLoad || currentUser.id;
     try {
       // 1. Fetch user profile
-      const resUser = await fetch('/api/auth/me', {
-        headers: { 'x-user-id': uid },
-      });
-      if (resUser.ok) {
-        const data = await resUser.json();
-        if (data.user) {
-          setCurrentUser(data.user);
-          localStorage.setItem('uniassist_user_id', data.user.id);
+      try {
+        const dataUser = await safeFetchJson<{ user: User }>('/api/auth/me', {
+          headers: { 'x-user-id': uid },
+        });
+        if (dataUser.user) {
+          setCurrentUser(dataUser.user);
+          localStorage.setItem('uniassist_user_id', dataUser.user.id);
         }
+      } catch (e) {
+        console.warn('User profile check:', e);
       }
 
       // 2. Fetch conversations for this user
-      const resConvs = await fetch('/api/conversations', {
-        headers: { 'x-user-id': uid },
-      });
-      if (resConvs.ok) {
-        const data = await resConvs.json();
-        setConversations(data.conversations || []);
-        if (data.conversations && data.conversations.length > 0) {
-          selectConversation(data.conversations[0].id);
-        } else {
-          setActiveConversationId(null);
-          setMessages([]);
+      try {
+        const dataConvs = await safeFetchJson<{ conversations: Conversation[] }>('/api/conversations', {
+          headers: { 'x-user-id': uid },
+        });
+        if (dataConvs.conversations) {
+          setConversations(dataConvs.conversations);
+          if (dataConvs.conversations.length > 0) {
+            selectConversation(dataConvs.conversations[0].id);
+          } else {
+            setActiveConversationId(null);
+            setMessages([]);
+          }
         }
+      } catch (e) {
+        console.warn('Conversations check:', e);
       }
 
       // 3. Fetch saved responses
-      const resSaved = await fetch('/api/saved', {
-        headers: { 'x-user-id': uid },
-      });
-      if (resSaved.ok) {
-        const data = await resSaved.json();
-        if (data.savedResponses) {
-          const ids = new Set<string>(data.savedResponses.map((s: any) => s.messageId));
+      try {
+        const dataSaved = await safeFetchJson<{ savedResponses: any[] }>('/api/saved', {
+          headers: { 'x-user-id': uid },
+        });
+        if (dataSaved.savedResponses) {
+          const ids = new Set<string>(dataSaved.savedResponses.map((s: any) => s.messageId));
           setSavedMessageIds(ids);
         }
+      } catch (e) {
+        console.warn('Saved responses check:', e);
       }
     } catch (err) {
       console.error('Failed to load user and conversations:', err);
@@ -138,11 +144,8 @@ export default function App() {
   const selectConversation = async (convId: string) => {
     setActiveConversationId(convId);
     try {
-      const res = await fetch(`/api/conversations/${convId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setMessages(data.messages || []);
-      }
+      const data = await safeFetchJson<{ messages: Message[] }>(`/api/conversations/${convId}`);
+      setMessages(data.messages || []);
     } catch (e) {
       console.error('Failed to fetch messages for conversation:', e);
     }
@@ -208,7 +211,7 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/chat', {
+      const data = await safeFetchJson('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -220,11 +223,6 @@ export default function App() {
           language,
         }),
       });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Chat request failed');
-      }
 
       // Update active conversation ID if newly created
       if (!activeConversationId && data.conversationId) {
@@ -239,13 +237,10 @@ export default function App() {
       ]);
 
       // Refresh conversation list to get latest title & snippet
-      const convsRes = await fetch('/api/conversations', {
+      const convsData = await safeFetchJson<{ conversations: Conversation[] }>('/api/conversations', {
         headers: { 'x-user-id': currentUser.id },
       });
-      if (convsRes.ok) {
-        const convsData = await convsRes.json();
-        setConversations(convsData.conversations || []);
-      }
+      setConversations(convsData.conversations || []);
     } catch (err: any) {
       console.error('Send message failed:', err);
       // Append fallback error assistant message
@@ -330,7 +325,7 @@ export default function App() {
   // Switch role handler (e.g. switch to Admin or Faculty)
   const handleSelectRole = async (role: UserRole) => {
     try {
-      const res = await fetch('/api/auth/switch-role', {
+      const data = await safeFetchJson<{ user: User }>('/api/auth/switch-role', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -338,8 +333,7 @@ export default function App() {
         },
         body: JSON.stringify({ role }),
       });
-      if (res.ok) {
-        const data = await res.json();
+      if (data.user) {
         setCurrentUser(data.user);
       }
     } catch (e) {
