@@ -30,6 +30,15 @@
   ],
   "conversations": [
     {
+      "id": "conv-1794117853515-ta3cr",
+      "userId": "user-student-1",
+      "title": "What is the passing percentage in un...",
+      "createdAt": "2026-11-08T06:04:13.515Z",
+      "updatedAt": "2026-11-08T06:04:21.702Z",
+      "messageCount": 2,
+      "lastMessageSnippet": "Based on the official **University Examination Regulations & Grading P"
+    },
+    {
       "id": "conv-sample-1",
       "userId": "user-student-1",
       "title": "Fall 2026 Examination & Grading Policy",
@@ -82,6 +91,61 @@
       "language": "en",
       "id": "msg-1793972573210-ute9l",
       "createdAt": "2026-11-06T13:42:53.210Z"
+    },
+    {
+      "conversationId": "conv-1794117853515-ta3cr",
+      "role": "user",
+      "content": "What is the passing percentage in university examinations?",
+      "language": "en",
+      "id": "msg-1794117853516-bty5t",
+      "createdAt": "2026-11-08T06:04:13.516Z"
+    },
+    {
+      "conversationId": "conv-1794117853515-ta3cr",
+      "role": "assistant",
+      "content": "Based on the official **University Examination Regulations & Grading Policy (Fall 2026)** (Examination Policies):\n\n- **Section 1** (Page 4):\n  UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...\n\n- **Section 2** (Page 4):\n  an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...\n\n- **Section 1** (Page 3):\n  CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...\n\n- **Section 1** (Page 4):\n  OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...\n\n\n*Note: Verified directly against university official records.*",
+      "citations": [
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...",
+          "relevanceScore": 1
+        },
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 2",
+          "excerpt": "an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...",
+          "relevanceScore": 0.78
+        },
+        {
+          "documentId": "doc-5",
+          "documentTitle": "Campus Code of Conduct, Library Rules & Student Services Guide",
+          "category": "Student Handbook",
+          "pageNumber": 3,
+          "section": "Section 1",
+          "excerpt": "CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...",
+          "relevanceScore": 0.56
+        },
+        {
+          "documentId": "doc-2",
+          "documentTitle": "Tuition Fee Structure, Payment Schedules & Merit Scholarships (2026-2027)",
+          "category": "Fee Structure",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...",
+          "relevanceScore": 0.44
+        }
+      ],
+      "isVerifiedAcademic": true,
+      "language": "en",
+      "id": "msg-1794117861702-1389u",
+      "createdAt": "2026-11-08T06:04:21.702Z"
     }
   ],
   "documents": [

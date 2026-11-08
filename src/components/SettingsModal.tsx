@@ -80,7 +80,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 Vector Embeddings
               </span>
               <span className="text-[10px] text-emerald-300 bg-emerald-950/40 border border-emerald-800 px-2 py-0.5 rounded-md font-mono">
-                gemini-embedding-2
+                text-embedding-004
               </span>
             </div>
             <div className="flex items-center justify-between text-slate-300 font-semibold">

@@ -24,6 +24,8 @@ import {
   Users,
   Shield,
   Layers,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -39,6 +41,8 @@ interface SidebarProps {
   onOpenRoleSwitcher: () => void;
   onOpenSettings: () => void;
   onOpenHelp: () => void;
+  onOpenAuth: () => void;
+  onLogout: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   isOpenMobile: boolean;
@@ -58,6 +62,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenRoleSwitcher,
   onOpenSettings,
   onOpenHelp,
+  onOpenAuth,
+  onLogout,
   isCollapsed,
   onToggleCollapse,
   isOpenMobile,
@@ -391,35 +397,60 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* User profile card */}
-          <div
-            onClick={onOpenRoleSwitcher}
-            className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors"
-            title="Click to switch role (Student / Faculty / Admin)"
-          >
-            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
-              {currentUser.fullName.charAt(0)}
-            </div>
-            {!isCollapsed && (
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold text-white truncate">
-                    {currentUser.fullName}
+          <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div
+              onClick={onOpenRoleSwitcher}
+              className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity"
+              title="Click to switch role (Student / Faculty / Admin)"
+            >
+              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {currentUser.fullName.charAt(0)}
+              </div>
+              {!isCollapsed && (
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-white truncate">
+                      {currentUser.fullName}
+                    </p>
+                    <span
+                      className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
+                        currentUser.role === 'admin'
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                          : currentUser.role === 'faculty'
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                          : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                      }`}
+                    >
+                      {currentUser.role}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 truncate">
+                    {currentUser.department}
                   </p>
-                  <span
-                    className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
-                      currentUser.role === 'admin'
-                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                        : currentUser.role === 'faculty'
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                    }`}
-                  >
-                    {currentUser.role}
-                  </span>
                 </div>
-                <p className="text-[10px] text-slate-400 truncate">
-                  {currentUser.department}
-                </p>
+              )}
+            </div>
+
+            {/* Account Switch & Logout Buttons */}
+            {!isCollapsed && (
+              <div className="flex items-center gap-1.5 pt-1.5 border-t border-slate-800/80">
+                <button
+                  type="button"
+                  onClick={onOpenAuth}
+                  className="flex-1 py-1.5 px-2 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-300 hover:text-white text-[11px] font-medium flex items-center justify-center gap-1 transition-colors"
+                  title="Sign In or Register New User"
+                >
+                  <LogIn className="w-3 h-3" />
+                  <span>Sign In / Switch</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800 text-slate-400 hover:text-rose-400 text-xs transition-colors"
+                  title="Log out and reset session"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
               </div>
             )}
           </div>

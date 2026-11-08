@@ -17,6 +17,7 @@ import {
   Bell,
   PanelRightClose,
   PanelRightOpen,
+  LogIn,
 } from 'lucide-react';
 
 interface ChatWorkspaceProps {
@@ -34,6 +35,7 @@ interface ChatWorkspaceProps {
   onOpenMobileMenu: () => void;
   onSelectPrompt: (promptText: string) => void;
   onNavigateTab: (tab: string) => void;
+  onOpenAuth?: () => void;
 }
 
 const SUGGESTED_PROMPTS = [
@@ -105,6 +107,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
   onOpenMobileMenu,
   onSelectPrompt,
   onNavigateTab,
+  onOpenAuth,
 }) => {
   const [inputText, setInputText] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ur' | 'roman_ur'>('en');
@@ -162,6 +165,17 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
+          {onOpenAuth && (
+            <button
+              onClick={onOpenAuth}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold transition-colors"
+              title="Sign in or register a new user"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign In / Register</span>
+            </button>
+          )}
+
           {/* Language Selector */}
           <div className="flex items-center bg-slate-800/80 border border-slate-700/80 rounded-lg p-0.5 text-xs">
             <Globe className="w-3.5 h-3.5 text-cyan-400 ml-1.5 mr-1" />

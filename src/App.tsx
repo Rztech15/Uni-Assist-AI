@@ -13,9 +13,10 @@ import { StudyAssistantView } from './components/StudyAssistantView';
 import { SavedResponsesView } from './components/SavedResponsesView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CitationsModal } from './components/CitationsModal';
-import { RoleSwitcherModal } from './components/RoleSwitcherModal';
-import { SettingsModal } from './components/SettingsModal';
-import { HelpSupportModal } from './components/HelpSupportModal';
+import { RoleSwitcherModal } from './components/RoleSwitcherModal.tsx';
+import { SettingsModal } from './components/SettingsModal.tsx';
+import { HelpSupportModal } from './components/HelpSupportModal.tsx';
+import { AuthModal } from './components/AuthModal.tsx';
 
 export default function App() {
   // Current active user
@@ -45,6 +46,7 @@ export default function App() {
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Layout UI
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -53,35 +55,43 @@ export default function App() {
 
   // Load User and Conversations on mount
   useEffect(() => {
-    loadUserAndConversations();
+    const savedUserId = localStorage.getItem('uniassist_user_id') || currentUser.id;
+    loadUserAndConversations(savedUserId);
   }, []);
 
-  const loadUserAndConversations = async () => {
+  const loadUserAndConversations = async (userIdToLoad?: string) => {
+    const uid = userIdToLoad || currentUser.id;
     try {
-      // 1. Fetch current user
+      // 1. Fetch user profile
       const resUser = await fetch('/api/auth/me', {
-        headers: { 'x-user-id': currentUser.id },
+        headers: { 'x-user-id': uid },
       });
       if (resUser.ok) {
         const data = await resUser.json();
-        if (data.user) setCurrentUser(data.user);
+        if (data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem('uniassist_user_id', data.user.id);
+        }
       }
 
-      // 2. Fetch conversations
+      // 2. Fetch conversations for this user
       const resConvs = await fetch('/api/conversations', {
-        headers: { 'x-user-id': currentUser.id },
+        headers: { 'x-user-id': uid },
       });
       if (resConvs.ok) {
         const data = await resConvs.json();
         setConversations(data.conversations || []);
-        if (data.conversations && data.conversations.length > 0 && !activeConversationId) {
+        if (data.conversations && data.conversations.length > 0) {
           selectConversation(data.conversations[0].id);
+        } else {
+          setActiveConversationId(null);
+          setMessages([]);
         }
       }
 
-      // 3. Fetch saved responses to track bookmark state
+      // 3. Fetch saved responses
       const resSaved = await fetch('/api/saved', {
-        headers: { 'x-user-id': currentUser.id },
+        headers: { 'x-user-id': uid },
       });
       if (resSaved.ok) {
         const data = await resSaved.json();
@@ -91,8 +101,37 @@ export default function App() {
         }
       }
     } catch (err) {
-      console.error('Failed to load initial data:', err);
+      console.error('Failed to load user and conversations:', err);
     }
+  };
+
+  const handleLoginSuccess = async (newUser: User) => {
+    setCurrentUser(newUser);
+    localStorage.setItem('uniassist_user_id', newUser.id);
+    setActiveConversationId(null);
+    setMessages([]);
+    await loadUserAndConversations(newUser.id);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {}
+    localStorage.removeItem('uniassist_user_id');
+    const defaultStudent: User = {
+      id: 'user-student-1',
+      fullName: 'Bilal Ahmed',
+      email: 'bilal.student@uniassist.edu',
+      role: 'student',
+      department: 'Computer Science',
+      university: 'UniAssist Metropolitan University',
+      createdAt: new Date().toISOString(),
+    };
+    setCurrentUser(defaultStudent);
+    setActiveConversationId(null);
+    setMessages([]);
+    await loadUserAndConversations(defaultStudent.id);
+    setIsAuthModalOpen(true);
   };
 
   // Select a conversation and load its messages
@@ -318,6 +357,8 @@ export default function App() {
   const currentConversation =
     conversations.find((c) => c.id === activeConversationId) || null;
 
+
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-950 font-sans antialiased text-slate-100">
       {/* Collapsible Responsive Sidebar */}
@@ -334,6 +375,8 @@ export default function App() {
         onOpenRoleSwitcher={() => setIsRoleModalOpen(true)}
         onOpenSettings={() => setIsSettingsModalOpen(true)}
         onOpenHelp={() => setIsHelpModalOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onLogout={handleLogout}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         isOpenMobile={isMobileMenuOpen}
@@ -355,6 +398,7 @@ export default function App() {
             onFeedback={handleFeedback}
             savedMessageIds={savedMessageIds}
             currentUser={currentUser}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
             onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
             onSelectPrompt={(promptText) => handleSendMessage(promptText)}
             onNavigateTab={setCurrentTab}
@@ -414,6 +458,13 @@ export default function App() {
       <HelpSupportModal
         isOpen={isHelpModalOpen}
         onClose={() => setIsHelpModalOpen(false)}
+      />
+
+      {/* Sign In & User Registration Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
       />
     </div>
   );

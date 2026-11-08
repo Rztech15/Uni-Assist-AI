@@ -23,16 +23,19 @@ function withTimeout<T>(promise: Promise<T>, ms: number = 4000): Promise<T> {
 }
 
 /**
- * Generate embedding for text using gemini-embedding-2-preview,
- * with fallback if key is unconfigured or rate limited.
+ * Generate embedding for text using text-embedding-004 (supported on v1 API),
+ * with graceful fallback to hybrid keyword search if unavailable.
  */
 export async function generateEmbedding(text: string): Promise<number[] | null> {
   if (!apiKey) return null;
+  const input = text.slice(0, 2000);
+
+  // 1. Primary: text-embedding-004 (standard supported embedContent model on v1)
   try {
     const response = await withTimeout(
       ai.models.embedContent({
-        model: 'gemini-embedding-2-preview',
-        contents: text.slice(0, 2000),
+        model: 'text-embedding-004',
+        contents: input,
       }),
       3500
     );
@@ -43,8 +46,26 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
     if (anyRes.embedding?.values) {
       return anyRes.embedding.values;
     }
-  } catch (err) {
-    console.warn('Embedding API unavailable or timed out, using hybrid keyword search:', err);
+  } catch {
+    // 2. Secondary fallback: gemini-embedding-2-preview (if preview endpoint enabled)
+    try {
+      const response = await withTimeout(
+        ai.models.embedContent({
+          model: 'gemini-embedding-2-preview',
+          contents: input,
+        }),
+        2500
+      );
+      const anyRes = response as any;
+      if (anyRes.embeddings?.[0]?.values) {
+        return anyRes.embeddings[0].values;
+      }
+      if (anyRes.embedding?.values) {
+        return anyRes.embedding.values;
+      }
+    } catch {
+      // Gracefully fall back to hybrid BM25 / keyword relevance search
+    }
   }
   return null;
 }
