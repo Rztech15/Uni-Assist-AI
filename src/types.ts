@@ -10,6 +10,16 @@ export interface User {
   createdAt: string;
 }
 
+export interface UserStats {
+  totalConversations: number;
+  questionsAnswered: number;
+  savedResponses: number;
+  studyProgress: number;
+  activeStudyPlans: number;
+  completedTasks: number;
+  totalTasks: number;
+}
+
 export interface Citation {
   documentId: string;
   documentTitle: string;

@@ -26,9 +26,54 @@
       "department": "Office of the Registrar",
       "university": "UniAssist Metropolitan University",
       "createdAt": "2026-11-06T13:35:06.555Z"
+    },
+    {
+      "fullName": "Fatima Noor",
+      "email": "test.user.1794238612452@uniassist.edu",
+      "role": "student",
+      "department": "Artificial Intelligence",
+      "university": "UniAssist Metropolitan University",
+      "id": "user-1794238612452-7kk69",
+      "createdAt": "2026-11-09T15:36:52.452Z"
+    },
+    {
+      "fullName": "Fatima Noor",
+      "email": "test.user.1794239022325@uniassist.edu",
+      "role": "student",
+      "department": "Artificial Intelligence",
+      "university": "UniAssist Metropolitan University",
+      "id": "user-1794239022325-620j1",
+      "createdAt": "2026-11-09T15:43:42.325Z"
+    },
+    {
+      "fullName": "Ali Khan",
+      "email": "ali.khan@uniassist.edu",
+      "role": "admin",
+      "department": "Computer Science",
+      "university": "UniAssist Metropolitan University",
+      "id": "user-1794239064834-aeg0t",
+      "createdAt": "2026-11-09T15:44:24.834Z"
+    },
+    {
+      "fullName": "Fatima Noor",
+      "email": "test.user.1794239270148@uniassist.edu",
+      "role": "student",
+      "department": "Artificial Intelligence",
+      "university": "UniAssist Metropolitan University",
+      "id": "user-1794239270148-jfaa0",
+      "createdAt": "2026-11-09T15:47:50.148Z"
     }
   ],
   "conversations": [
+    {
+      "id": "conv-1794239087672-09pwr",
+      "userId": "user-1794239064834-aeg0t",
+      "title": "What are the official examination ru...",
+      "createdAt": "2026-11-09T15:44:47.672Z",
+      "updatedAt": "2026-11-09T15:44:48.041Z",
+      "messageCount": 2,
+      "lastMessageSnippet": "Based on the official **University Examination Regulations & Grading P"
+    },
     {
       "id": "conv-1794117853515-ta3cr",
       "userId": "user-student-1",
@@ -146,6 +191,61 @@
       "language": "en",
       "id": "msg-1794117861702-1389u",
       "createdAt": "2026-11-08T06:04:21.702Z"
+    },
+    {
+      "conversationId": "conv-1794239087672-09pwr",
+      "role": "user",
+      "content": "What are the official examination rules and passing percentage at the university?",
+      "language": "en",
+      "id": "msg-1794239087672-iq16t",
+      "createdAt": "2026-11-09T15:44:47.672Z"
+    },
+    {
+      "conversationId": "conv-1794239087672-09pwr",
+      "role": "assistant",
+      "content": "Based on the official **University Examination Regulations & Grading Policy (Fall 2026)** (Examination Policies):\n\n- **Section 1** (Page 4):\n  UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...\n\n- **Section 1** (Page 4):\n  OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...\n\n- **Section 1** (Page 3):\n  CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...\n\n- **Section 2** (Page 4):\n  an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...\n\n\n*Note: Verified directly against university official records.*",
+      "citations": [
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...",
+          "relevanceScore": 1
+        },
+        {
+          "documentId": "doc-2",
+          "documentTitle": "Tuition Fee Structure, Payment Schedules & Merit Scholarships (2026-2027)",
+          "category": "Fee Structure",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...",
+          "relevanceScore": 0.85
+        },
+        {
+          "documentId": "doc-5",
+          "documentTitle": "Campus Code of Conduct, Library Rules & Student Services Guide",
+          "category": "Student Handbook",
+          "pageNumber": 3,
+          "section": "Section 1",
+          "excerpt": "CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...",
+          "relevanceScore": 0.85
+        },
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 2",
+          "excerpt": "an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...",
+          "relevanceScore": 0.67
+        }
+      ],
+      "isVerifiedAcademic": true,
+      "language": "en",
+      "id": "msg-1794239088041-8fno0",
+      "createdAt": "2026-11-09T15:44:48.041Z"
     }
   ],
   "documents": [
@@ -278,6 +378,52 @@
   ],
   "savedResponses": [
     {
+      "userId": "user-1794239064834-aeg0t",
+      "messageId": "msg-1794239088041-8fno0",
+      "query": "What are the official examination rules and passing percentage at the university?",
+      "answer": "Based on the official **University Examination Regulations & Grading Policy (Fall 2026)** (Examination Policies):\n\n- **Section 1** (Page 4):\n  UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...\n\n- **Section 1** (Page 4):\n  OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...\n\n- **Section 1** (Page 3):\n  CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...\n\n- **Section 2** (Page 4):\n  an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...\n\n\n*Note: Verified directly against university official records.*",
+      "citations": [
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "UNIVERSITY EXAMINATION & GRADING REGULATIONS - ACADEMIC YEAR 2026 Page 1 - Section 1: Grading Scale & Grade Point Average (GPA) The University adheres to a 4.0 grading scale: - Grade A: 85% and above (GPA 4.00, Excellent...",
+          "relevanceScore": 1
+        },
+        {
+          "documentId": "doc-2",
+          "documentTitle": "Tuition Fee Structure, Payment Schedules & Merit Scholarships (2026-2027)",
+          "category": "Fee Structure",
+          "pageNumber": 4,
+          "section": "Section 1",
+          "excerpt": "OFFICIAL TUITION FEE SCHEDULE & SCHOLARSHIP POLICIES 2026-2027 Page 1 - Section 1: Undergraduate & Graduate Tuition Rates Undergraduate Programs: - Engineering & Computing: $3,200 (or PKR 480,000) per semester (up to 18 ...",
+          "relevanceScore": 0.85
+        },
+        {
+          "documentId": "doc-5",
+          "documentTitle": "Campus Code of Conduct, Library Rules & Student Services Guide",
+          "category": "Student Handbook",
+          "pageNumber": 3,
+          "section": "Section 1",
+          "excerpt": "CAMPUS CODE OF CONDUCT, STUDENT FACILITIES & SERVICES GUIDE Page 1 - Section 1: Central Library Regulations - Library Operating Hours: Monday to Friday 08:00 AM - 10:00 PM; Saturday & Sunday 10:00 AM - 06:00 PM. - Extend...",
+          "relevanceScore": 0.85
+        },
+        {
+          "documentId": "doc-1",
+          "documentTitle": "University Examination Regulations & Grading Policy (Fall 2026)",
+          "category": "Examination Policies",
+          "pageNumber": 4,
+          "section": "Section 2",
+          "excerpt": "an examination due to documented emergency or acute hospitalization must submit a formal petition along with medical proof to the Controller of Examinations and Department Chairperson within 7 calendar days of the missed...",
+          "relevanceScore": 0.67
+        }
+      ],
+      "id": "saved-1794239097027-78nwj",
+      "createdAt": "2026-11-09T15:44:57.027Z"
+    },
+    {
       "id": "saved-1",
       "userId": "user-student-1",
       "messageId": "msg-2",
@@ -307,6 +453,47 @@
     }
   ],
   "studyPlans": [
+    {
+      "userId": "user-1794239064834-aeg0t",
+      "title": "Intensive Revision Schedule: CS201 Data Structures",
+      "subject": "CS201 Data Structures",
+      "targetExamDate": "2026-12-05",
+      "schedule": [
+        {
+          "day": "Day 1",
+          "topic": "Course Syllabus Review & Core Definitions",
+          "hours": 3,
+          "completed": true
+        },
+        {
+          "day": "Day 2",
+          "topic": "High-Weightage Chapters & Theorem Review",
+          "hours": 3,
+          "completed": true
+        },
+        {
+          "day": "Day 3",
+          "topic": "Practical Problem Solving & Exercises",
+          "hours": 3,
+          "completed": false
+        },
+        {
+          "day": "Day 4",
+          "topic": "Past Examination Questions & Timed Mock Test",
+          "hours": 3,
+          "completed": false
+        },
+        {
+          "day": "Day 5",
+          "topic": "Formula Cheat Sheet & Quick Self-Quiz",
+          "hours": 3,
+          "completed": false
+        }
+      ],
+      "progress": 40,
+      "id": "plan-1794239127371-67j1k",
+      "createdAt": "2026-11-09T15:45:27.372Z"
+    },
     {
       "id": "plan-1",
       "userId": "user-student-1",

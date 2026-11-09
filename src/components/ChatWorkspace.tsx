@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Message, Conversation, Citation, User } from '../types';
+import { Message, Conversation, Citation, User, UserStats } from '../types';
 import { ChatMessageItem } from './ChatMessageItem';
+import { KPICards } from './KPICards';
 import {
   Send,
   Square,
@@ -18,6 +19,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
   LogIn,
+  RotateCw,
 } from 'lucide-react';
 
 interface ChatWorkspaceProps {
@@ -32,10 +34,14 @@ interface ChatWorkspaceProps {
   onFeedback?: (messageId: string, rating: 'like' | 'dislike', comment?: string) => void;
   savedMessageIds: Set<string>;
   currentUser: User;
+  userStats: UserStats | null;
+  isLoadingStats?: boolean;
   onOpenMobileMenu: () => void;
+  onToggleDesktopSidebar?: () => void;
   onSelectPrompt: (promptText: string) => void;
   onNavigateTab: (tab: string) => void;
   onOpenAuth?: () => void;
+  onRefreshStats?: () => void;
 }
 
 const SUGGESTED_PROMPTS = [
@@ -64,7 +70,7 @@ const SUGGESTED_PROMPTS = [
     tag: 'Study Help',
   },
   {
-    title: 'Math Concept',
+    title: 'Algorithm Tracing',
     query: 'Explain Dijkstra shortest path algorithm with a step-by-step example.',
     icon: Sparkles,
     tag: 'Math & CS',
@@ -88,7 +94,7 @@ const VERIFIED_ANNOUNCEMENTS = [
     id: 'ann-2',
     title: 'Merit Scholarship Renewal Deadline',
     date: 'Office of the Registrar • Fall 2026',
-    summary: 'Students with CGPA 3.75+ qualify for up to 50% tuition waiver upon registrar verification.',
+    summary: 'Students with CGPA 3.75+ qualify for up to 50% tuition waiver upon registrar transcript verification.',
   },
 ];
 
@@ -104,14 +110,18 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
   onFeedback,
   savedMessageIds,
   currentUser,
+  userStats,
+  isLoadingStats = false,
   onOpenMobileMenu,
+  onToggleDesktopSidebar,
   onSelectPrompt,
   onNavigateTab,
   onOpenAuth,
+  onRefreshStats,
 }) => {
   const [inputText, setInputText] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ur' | 'roman_ur'>('en');
-  const [showSidePanel, setShowSidePanel] = useState(true);
+  const [showSidePanel, setShowSidePanel] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -134,18 +144,35 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
     }
   };
 
+  // Derive personalized welcome name dynamically
+  const firstName = currentUser?.fullName ? currentUser.fullName.split(' ')[0] : 'Scholar';
+
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-950 text-slate-100 overflow-hidden">
-      {/* Top Navbar */}
+      {/* Top Navbar with Collapsible Hamburger Menu */}
       <header className="h-14 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md px-4 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
+          {/* Mobile hamburger menu */}
           <button
             onClick={onOpenMobileMenu}
-            aria-label="Open mobile navigation"
-            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            aria-label="Open navigation menu"
+            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
+
+          {/* Desktop hamburger toggle */}
+          {onToggleDesktopSidebar && (
+            <button
+              onClick={onToggleDesktopSidebar}
+              aria-label="Toggle navigation menu"
+              className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title="Toggle sidebar menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          )}
+
           <div>
             <h2 className="text-sm font-semibold text-white truncate max-w-xs md:max-w-md">
               {conversation ? conversation.title : 'UniAssist Academic Assistant'}
@@ -157,7 +184,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
               </span>
               <span className="text-[10px] text-slate-500">•</span>
               <span className="text-[11px] text-slate-400">
-                Role: <strong className="text-slate-200 capitalize">{currentUser.role}</strong>
+                Role: <strong className="text-slate-200 capitalize">{currentUser?.role || 'student'}</strong>
               </span>
             </div>
           </div>
@@ -165,17 +192,6 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
-          {onOpenAuth && (
-            <button
-              onClick={onOpenAuth}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold transition-colors"
-              title="Sign in or register a new user"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Sign In / Register</span>
-            </button>
-          )}
-
           {/* Language Selector */}
           <div className="flex items-center bg-slate-800/80 border border-slate-700/80 rounded-lg p-0.5 text-xs">
             <Globe className="w-3.5 h-3.5 text-cyan-400 ml-1.5 mr-1" />
@@ -183,7 +199,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value as any)}
               className="bg-transparent text-slate-200 text-xs pr-1 py-1 focus:outline-hidden cursor-pointer"
-              title="Select language mode"
+              title="Select language response mode"
             >
               <option value="en" className="bg-slate-900 text-white">English</option>
               <option value="roman_ur" className="bg-slate-900 text-white">Roman Urdu</option>
@@ -191,7 +207,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
             </select>
           </div>
 
-          {/* Toggle Announcements / Context Side Panel */}
+          {/* Toggle Announcements Side Panel */}
           <button
             onClick={() => setShowSidePanel(!showSidePanel)}
             aria-label={showSidePanel ? 'Close contextual panel' : 'Open contextual panel'}
@@ -214,46 +230,77 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4">
             {messages.length === 0 ? (
-              /* Empty Dashboard Welcome State */
-              <div className="max-w-3xl mx-auto py-6 space-y-8 animate-in fade-in duration-300">
-                {/* Hero Greeting */}
-                <div className="p-6 md:p-8 rounded-3xl bg-linear-to-b from-blue-950/40 via-slate-900/60 to-slate-900/40 border border-blue-900/40 text-center relative overflow-hidden shadow-xl">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 text-xs font-semibold mb-3">
-                    <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                    Verified Institutional Intelligence
+              /* Authenticated Dashboard Welcome State with Real Dynamic KPI Cards */
+              <div className="max-w-4xl mx-auto py-4 space-y-6 animate-in fade-in duration-300">
+                {/* Personalized Welcome Header using the authenticated user's actual name */}
+                <div className="p-6 md:p-8 rounded-3xl bg-linear-to-b from-blue-950/40 via-slate-900/60 to-slate-900/40 border border-blue-900/40 relative overflow-hidden shadow-xl">
+                  <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+                  
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 text-xs font-semibold w-fit">
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                      Verified Institutional Knowledge Base
+                    </div>
+                    {onRefreshStats && (
+                      <button
+                        onClick={onRefreshStats}
+                        className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-white transition-colors w-fit"
+                        title="Refresh live user metrics"
+                      >
+                        <RotateCw className="w-3 h-3" />
+                        <span>Live Sync</span>
+                      </button>
+                    )}
                   </div>
+
                   <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                    Welcome back, {currentUser.fullName}
+                    Welcome, {firstName}!
                   </h1>
-                  <p className="text-sm text-slate-300 max-w-xl mx-auto mt-2 leading-relaxed">
-                    Your University. Your Knowledge. One AI Assistant. Ask questions grounded in official handbooks, exam policies, course outlines, or explore step-by-step study aids.
+                  
+                  <p className="text-xs md:text-sm text-slate-300 max-w-2xl mt-2 leading-relaxed">
+                    Your University. Your Knowledge. One AI Assistant. Ask questions grounded in official handbooks, exam policies, and course outlines, or explore study tools.
                   </p>
 
-                  {/* Quick Feature Buttons */}
-                  <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                  {/* Feature Quick Launch */}
+                  <div className="flex flex-wrap items-center gap-3 mt-5">
                     <button
                       onClick={() => onNavigateTab('study')}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-600/30 transition-all"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
-                      Open Study Assistant
+                      <span>Study Assistant</span>
                     </button>
                     <button
                       onClick={() => onNavigateTab('knowledge')}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-all"
                     >
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      Browse Official Documents
+                      <span>Knowledge Base</span>
+                    </button>
+                    <button
+                      onClick={() => onNavigateTab('saved')}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-all"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Saved Notes</span>
                     </button>
                   </div>
                 </div>
 
+                {/* KPI Cards Section */}
+                <div>
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1 mb-2.5">
+                    <span>YOUR ACADEMIC ACTIVITY & METRICS</span>
+                    <span className="text-[11px] text-cyan-400 font-normal">Real-time database analytics</span>
+                  </div>
+                  <KPICards stats={userStats} isLoading={isLoadingStats} onNavigateTab={onNavigateTab} />
+                </div>
+
                 {/* Suggested Prompts Grid */}
-                <div className="space-y-3">
+                <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1">
                     <span>SUGGESTED ACADEMIC QUERIES</span>
-                    <span className="text-[11px] text-cyan-400 font-normal">Click to ask instantly</span>
+                    <span className="text-[11px] text-cyan-400 font-normal">Click to query verified documents</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {SUGGESTED_PROMPTS.map((item, idx) => {
@@ -272,7 +319,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
                               <h3 className="text-xs font-semibold text-slate-200 group-hover:text-cyan-300">
                                 {item.title}
                               </h3>
-                              <span className="text-[10px] text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
                                 {item.tag}
                               </span>
                             </div>
@@ -385,7 +432,7 @@ export const ChatWorkspace: React.FC<ChatWorkspaceProps> = ({
           </div>
         </div>
 
-        {/* Optional Contextual Information Panel */}
+        {/* Contextual Information Panel */}
         {showSidePanel && (
           <aside className="hidden lg:flex w-80 flex-col border-l border-slate-800 bg-slate-900/40 p-4 space-y-5 overflow-y-auto shrink-0">
             {/* Announcements */}

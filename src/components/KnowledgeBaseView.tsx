@@ -22,11 +22,14 @@ import {
   ChevronRight,
   X,
   FileCode,
+  Menu,
 } from 'lucide-react';
 
 interface KnowledgeBaseViewProps {
   currentUser: User;
   onRefreshDocs?: () => void;
+  onOpenMobileMenu?: () => void;
+  onToggleDesktopSidebar?: () => void;
 }
 
 const CATEGORIES: DocumentCategory[] = [
@@ -44,6 +47,9 @@ const CATEGORIES: DocumentCategory[] = [
 
 export const KnowledgeBaseView: React.FC<KnowledgeBaseViewProps> = ({
   currentUser,
+  onRefreshDocs,
+  onOpenMobileMenu,
+  onToggleDesktopSidebar,
 }) => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -182,19 +188,40 @@ export const KnowledgeBaseView: React.FC<KnowledgeBaseViewProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-950 overflow-hidden text-slate-100">
       {/* Header */}
-      <header className="p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              University Knowledge Base
-            </h1>
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-              {documents.filter((d) => d.status === 'indexed').length} Verified Indexed
-            </span>
+      <header className="p-4 md:p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              aria-label="Open navigation menu"
+              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          {onToggleDesktopSidebar && (
+            <button
+              onClick={onToggleDesktopSidebar}
+              aria-label="Toggle navigation menu"
+              className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title="Toggle sidebar menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">
+                University Knowledge Base
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                {documents.filter((d) => d.status === 'indexed').length} Verified Indexed
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Authoritative institutional repository used by UniAssist AI for grounded RAG generation.
+            </p>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Authoritative institutional repository used by UniAssist AI for grounded RAG generation.
-          </p>
         </div>
 
         <button

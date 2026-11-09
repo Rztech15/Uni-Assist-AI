@@ -46,6 +46,19 @@ app.get('/api/auth/me', (req: Request, res: Response) => {
   res.json({ success: true, user });
 });
 
+// GET /api/user/stats - User-specific KPI cards data
+app.get('/api/user/stats', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  const stats = db.getUserStats(user.id);
+  res.json({ success: true, stats, user });
+});
+
+app.get('/api/dashboard/stats', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  const stats = db.getUserStats(user.id);
+  res.json({ success: true, stats, user });
+});
+
 app.post('/api/auth/register', (req: Request, res: Response) => {
   const { fullName, email, role, department, university } = req.body;
   if (!fullName || !email) {

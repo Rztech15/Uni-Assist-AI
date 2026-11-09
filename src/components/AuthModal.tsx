@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import { safeFetchJson } from '../utils/api';
 import {
@@ -36,6 +36,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Sync mode with prop when opened
+  useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+    }
+  }, [isOpen, initialMode]);
+
   // Form Fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,6 +55,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
+  const validateEmail = (val: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+  };
+
   // Handle Login
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +66,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setSuccessMessage(null);
 
     if (!email.trim()) {
-      setErrorMessage('Please enter your university email');
+      setErrorMessage('Please enter your university email address');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMessage('Please enter a valid email address (e.g., student@uniassist.edu)');
       return;
     }
 
@@ -66,8 +84,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       });
 
       localStorage.setItem('uniassist_user_id', data.user.id);
-      onLoginSuccess(data.user);
-      onClose();
+      setSuccessMessage(`Welcome, ${data.user.fullName}! Signing you in...`);
+      setTimeout(() => {
+        onLoginSuccess(data.user);
+        onClose();
+      }, 500);
     } catch (err: any) {
       setErrorMessage(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -81,8 +102,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!fullName.trim() || !email.trim()) {
-      setErrorMessage('Full name and email are required');
+    if (!fullName.trim()) {
+      setErrorMessage('Full name is required');
+      return;
+    }
+
+    if (!email.trim()) {
+      setErrorMessage('University email is required');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMessage('Please enter a valid institutional email address (e.g. name@uniassist.edu)');
+      return;
+    }
+
+    if (!password.trim() || password.length < 4) {
+      setErrorMessage('Password must be at least 4 characters long');
       return;
     }
 
@@ -95,18 +131,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           fullName: fullName.trim(),
           email: email.trim(),
           role,
-          department: department.trim() || 'General Studies',
+          department: department.trim() || 'Computer Science',
           university: university.trim() || 'UniAssist Metropolitan University',
           password,
         }),
       });
 
       localStorage.setItem('uniassist_user_id', data.user.id);
-      setSuccessMessage('Account created successfully! Signing you in...');
+      setSuccessMessage(`Account created successfully! Welcome, ${data.user.fullName}!`);
       setTimeout(() => {
         onLoginSuccess(data.user);
         onClose();
-      }, 700);
+      }, 600);
     } catch (err: any) {
       setErrorMessage(err.message || 'Registration failed.');
     } finally {
@@ -117,15 +153,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   // Handle Password Reset
   const handleResetSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setErrorMessage('Enter your registered email address');
+    if (!email.trim() || !validateEmail(email)) {
+      setErrorMessage('Please enter your valid registered email address');
       return;
     }
-    setSuccessMessage('Password reset instructions sent to your institutional email inbox.');
+    setSuccessMessage('Password reset instructions sent to your institutional email.');
     setTimeout(() => {
       setMode('login');
       setSuccessMessage(null);
-    }, 2500);
+    }, 2000);
   };
 
   // Quick One-Click Demo Logins
@@ -179,7 +215,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Sign in to your university portal account or register as a new member
+                {mode === 'login'
+                  ? 'Sign in to access your personal dashboard & conversations'
+                  : mode === 'register'
+                  ? 'Create a new university account to start learning'
+                  : 'Reset your institutional account password'}
               </p>
             </div>
           </div>
@@ -216,7 +256,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
-              Create Account
+              Register
             </button>
           </div>
         </div>
@@ -237,8 +277,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
         </div>
 
-        {/* FORM CONTENT */}
-        <div className="p-6 overflow-y-auto max-h-[65vh]">
+        {/* Form Content */}
+        <div className="p-6 overflow-y-auto max-h-[60vh]">
           {/* 1. SIGN IN (LOGIN) */}
           {mode === 'login' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -308,7 +348,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Ayesha Khan"
+                    placeholder="e.g. Ali Raza"
                     className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-hidden focus:border-blue-500"
                     required
                   />
@@ -372,7 +412,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a secure password"
+                    placeholder="Create a password (min 4 chars)"
                     className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-hidden focus:border-blue-500"
                     required
                   />

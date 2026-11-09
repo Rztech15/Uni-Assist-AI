@@ -11,17 +11,24 @@ import {
   ExternalLink,
   ShieldCheck,
   FileText,
+  Menu,
 } from 'lucide-react';
 import { marked } from 'marked';
 
 interface SavedResponsesViewProps {
   currentUser: User;
   onOpenCitations?: (citations: Citation[]) => void;
+  onSavedUpdated?: () => void;
+  onOpenMobileMenu?: () => void;
+  onToggleDesktopSidebar?: () => void;
 }
 
 export const SavedResponsesView: React.FC<SavedResponsesViewProps> = ({
   currentUser,
   onOpenCitations,
+  onSavedUpdated,
+  onOpenMobileMenu,
+  onToggleDesktopSidebar,
 }) => {
   const [savedItems, setSavedItems] = useState<SavedResponse[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,6 +56,7 @@ export const SavedResponsesView: React.FC<SavedResponsesViewProps> = ({
         headers: { 'x-user-id': currentUser.id },
       });
       setSavedItems((prev) => prev.filter((item) => item.id !== id));
+      if (onSavedUpdated) onSavedUpdated();
     } catch (e) {
       console.error(e);
     }
@@ -88,19 +96,40 @@ export const SavedResponsesView: React.FC<SavedResponsesViewProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-950 text-slate-100 overflow-hidden">
       {/* Header */}
-      <header className="p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              Saved Responses & Research Notes
-            </h1>
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">
-              {savedItems.length} Bookmarks
-            </span>
+      <header className="p-4 md:p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              aria-label="Open navigation menu"
+              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          {onToggleDesktopSidebar && (
+            <button
+              onClick={onToggleDesktopSidebar}
+              aria-label="Toggle navigation menu"
+              className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title="Toggle sidebar menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">
+                Saved Responses & Research Notes
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">
+                {savedItems.length} Bookmarks
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Access verified institutional answers and academic explanations you previously bookmarked.
+            </p>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Access verified institutional answers and academic explanations you previously bookmarked.
-          </p>
         </div>
 
         {savedItems.length > 0 && (

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Conversation,
   User,
-  UserRole,
 } from '../types';
 import {
   MessageSquarePlus,
@@ -10,7 +9,7 @@ import {
   GraduationCap,
   FileText,
   Bookmark,
-  ShieldAlert,
+  Shield,
   Settings,
   HelpCircle,
   Search,
@@ -18,14 +17,13 @@ import {
   Edit2,
   Check,
   X,
+  Menu,
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Users,
-  Shield,
-  Layers,
   LogIn,
   LogOut,
+  Layers,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -37,7 +35,7 @@ interface SidebarProps {
   onNewChat: () => void;
   onRenameConversation: (id: string, newTitle: string) => void;
   onDeleteConversation: (id: string) => void;
-  currentUser: User;
+  currentUser: User | null;
   onOpenRoleSwitcher: () => void;
   onOpenSettings: () => void;
   onOpenHelp: () => void;
@@ -103,9 +101,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const handleNavClick = (tab: string) => {
+    if (tab === 'new_chat') {
+      onNewChat();
+      onSelectTab('chat');
+    } else {
+      onSelectTab(tab);
+    }
+    if (isOpenMobile) onCloseMobile();
+  };
+
   return (
     <>
-      {/* Mobile Backdrop */}
+      {/* Mobile Backdrop Overlay */}
       {isOpenMobile && (
         <div
           className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-xs md:hidden"
@@ -119,12 +127,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
           isCollapsed ? 'w-20' : 'w-72'
         } ${isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
-        {/* Brand Header */}
+        {/* Brand Header with Collapsible Hamburger Toggle */}
         <div className="flex items-center justify-between p-4 border-b border-slate-800/80">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
-              <GraduationCap className="w-5 h-5" />
-            </div>
+            <button
+              onClick={onToggleCollapse}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title={isCollapsed ? 'Expand menu' : 'Collapse menu'}
+            >
+              <Menu className="w-5 h-5 text-slate-300" />
+            </button>
             {!isCollapsed && (
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -150,57 +163,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* New Chat Button */}
-        <div className="p-3">
+        {/* 5-Item Navigation Menu as requested */}
+        <div className="p-3 space-y-1.5">
+          {/* 1. New Chat */}
           <button
-            onClick={() => {
-              onNewChat();
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20 transition-all ${
-              isCollapsed ? 'px-0' : ''
-            }`}
-            title="Start new conversation"
+            onClick={() => handleNavClick('new_chat')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium transition-all ${
+              currentTab === 'chat' && !activeConversationId
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                : 'bg-blue-600/15 hover:bg-blue-600/25 text-blue-300 hover:text-white border border-blue-500/30'
+            } ${isCollapsed ? 'justify-center px-0' : ''}`}
+            title="Start New Chat"
           >
-            <MessageSquarePlus className="w-4 h-4 shrink-0" />
-            {!isCollapsed && <span className="text-sm font-semibold">New Chat</span>}
-          </button>
-        </div>
-
-        {/* Main Navigation Modules */}
-        <div className="px-3 py-2 space-y-1">
-          <button
-            onClick={() => {
-              onSelectTab('chat');
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
-              currentTab === 'chat'
-                ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-            }`}
-            title="AI Chat"
-          >
-            <Sparkles className="w-4 h-4 shrink-0 text-cyan-400" />
-            {!isCollapsed && <span>Conversational AI</span>}
+            <MessageSquarePlus className="w-4 h-4 shrink-0 text-cyan-300" />
+            {!isCollapsed && (
+              <div className="flex items-center justify-between flex-1 text-xs">
+                <span className="font-semibold">1. New Chat</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/30 text-white font-medium">
+                  Fresh
+                </span>
+              </div>
+            )}
           </button>
 
+          {/* 2. Study Assistant */}
           <button
-            onClick={() => {
-              onSelectTab('study');
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+            onClick={() => handleNavClick('study')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
               currentTab === 'study'
-                ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-            }`}
-            title="Study Assistant"
+                ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-xs'
+                : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
+            } ${isCollapsed ? 'justify-center px-0' : ''}`}
+            title="Study Assistant & Exam Prep"
           >
             <BookOpen className="w-4 h-4 shrink-0 text-amber-400" />
             {!isCollapsed && (
               <div className="flex items-center justify-between flex-1">
-                <span>Study Assistant</span>
+                <span>2. Study Assistant</span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">
                   Exam Prep
                 </span>
@@ -208,56 +207,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </button>
 
+          {/* 3. Knowledge Base */}
           <button
-            onClick={() => {
-              onSelectTab('knowledge');
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+            onClick={() => handleNavClick('knowledge')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
               currentTab === 'knowledge'
-                ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-            }`}
+                ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-xs'
+                : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
+            } ${isCollapsed ? 'justify-center px-0' : ''}`}
             title="University Knowledge Base"
           >
             <FileText className="w-4 h-4 shrink-0 text-emerald-400" />
-            {!isCollapsed && <span>Knowledge Base</span>}
+            {!isCollapsed && (
+              <div className="flex items-center justify-between flex-1">
+                <span>3. Knowledge Base</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">
+                  Docs
+                </span>
+              </div>
+            )}
           </button>
 
+          {/* 4. Saved Responses */}
           <button
-            onClick={() => {
-              onSelectTab('saved');
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+            onClick={() => handleNavClick('saved')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
               currentTab === 'saved'
-                ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-            }`}
-            title="Saved Responses"
+                ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-xs'
+                : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
+            } ${isCollapsed ? 'justify-center px-0' : ''}`}
+            title="Saved Responses & Notes"
           >
             <Bookmark className="w-4 h-4 shrink-0 text-indigo-400" />
-            {!isCollapsed && <span>Saved Responses</span>}
+            {!isCollapsed && (
+              <div className="flex items-center justify-between flex-1">
+                <span>4. Saved Responses</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">
+                  Notes
+                </span>
+              </div>
+            )}
           </button>
 
-          {/* Admin Dashboard item (visible for all or highlighted for admin) */}
+          {/* 5. Admin Dashboard */}
           <button
-            onClick={() => {
-              onSelectTab('admin');
-              if (isOpenMobile) onCloseMobile();
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+            onClick={() => handleNavClick('admin')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
               currentTab === 'admin'
-                ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-            }`}
-            title="Administration"
+                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-xs'
+                : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
+            } ${isCollapsed ? 'justify-center px-0' : ''}`}
+            title="Admin Dashboard"
           >
             <Shield className="w-4 h-4 shrink-0 text-rose-400" />
             {!isCollapsed && (
               <div className="flex items-center justify-between flex-1">
-                <span>Admin Dashboard</span>
-                {currentUser.role === 'admin' && (
+                <span>5. Admin Dashboard</span>
+                {currentUser?.role === 'admin' && (
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-semibold">
                     Admin
                   </span>
@@ -268,12 +274,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Divider */}
-        <div className="mx-3 my-2 border-t border-slate-800" />
+        <div className="mx-3 my-1 border-t border-slate-800" />
 
         {/* Chat History Section */}
         {!isCollapsed && (
           <div className="flex-1 flex flex-col min-h-0 px-3">
-            <div className="flex items-center justify-between pb-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="flex items-center justify-between py-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
               <span>Chat History</span>
               <span className="text-[10px] text-slate-500">{conversations.length}</span>
             </div>
@@ -330,10 +336,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           <button
                             onClick={(e) => confirmRename(conv.id, e)}
                             className="p-1 hover:text-emerald-400"
+                            title="Save title"
                           >
                             <Check className="w-3.5 h-3.5" />
                           </button>
-                          <button onClick={cancelRename} className="p-1 hover:text-rose-400">
+                          <button
+                            onClick={cancelRename}
+                            className="p-1 hover:text-rose-400"
+                            title="Cancel rename"
+                          >
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -396,64 +407,79 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           </div>
 
-          {/* User profile card */}
-          <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
-            <div
-              onClick={onOpenRoleSwitcher}
-              className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity"
-              title="Click to switch role (Student / Faculty / Admin)"
-            >
-              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                {currentUser.fullName.charAt(0)}
-              </div>
-              {!isCollapsed && (
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-white truncate">
-                      {currentUser.fullName}
+          {/* User profile card or Sign In Button */}
+          {currentUser ? (
+            <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+              <div
+                onClick={onOpenRoleSwitcher}
+                className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity"
+                title="Click to switch role (Student / Faculty / Admin)"
+              >
+                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  {currentUser.fullName.charAt(0)}
+                </div>
+                {!isCollapsed && (
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold text-white truncate">
+                        {currentUser.fullName}
+                      </p>
+                      <span
+                        className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
+                          currentUser.role === 'admin'
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                            : currentUser.role === 'faculty'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                        }`}
+                      >
+                        {currentUser.role}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 truncate">
+                      {currentUser.department}
                     </p>
-                    <span
-                      className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
-                        currentUser.role === 'admin'
-                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                          : currentUser.role === 'faculty'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                          : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                      }`}
-                    >
-                      {currentUser.role}
-                    </span>
                   </div>
-                  <p className="text-[10px] text-slate-400 truncate">
-                    {currentUser.department}
-                  </p>
+                )}
+              </div>
+
+              {/* Account Switch & Logout Buttons */}
+              {!isCollapsed && (
+                <div className="flex items-center gap-1.5 pt-1.5 border-t border-slate-800/80">
+                  <button
+                    type="button"
+                    onClick={onOpenAuth}
+                    className="flex-1 py-1.5 px-2 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-300 hover:text-white text-[11px] font-medium flex items-center justify-center gap-1 transition-colors"
+                    title="Sign In or Switch User"
+                  >
+                    <LogIn className="w-3 h-3" />
+                    <span>Switch Account</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    className="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800 text-slate-400 hover:text-rose-400 text-xs transition-colors"
+                    title="Log out and reset session"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )}
             </div>
-
-            {/* Account Switch & Logout Buttons */}
-            {!isCollapsed && (
-              <div className="flex items-center gap-1.5 pt-1.5 border-t border-slate-800/80">
-                <button
-                  type="button"
-                  onClick={onOpenAuth}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-300 hover:text-white text-[11px] font-medium flex items-center justify-center gap-1 transition-colors"
-                  title="Sign In or Register New User"
-                >
-                  <LogIn className="w-3 h-3" />
-                  <span>Sign In / Switch</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onLogout}
-                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800 text-slate-400 hover:text-rose-400 text-xs transition-colors"
-                  title="Log out and reset session"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
+          ) : (
+            <div className="space-y-1.5">
+              <button
+                type="button"
+                onClick={onOpenAuth}
+                className={`w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-600/30 transition-all ${
+                  isCollapsed ? 'px-0' : ''
+                }`}
+              >
+                <LogIn className="w-4 h-4 shrink-0" />
+                {!isCollapsed && <span>Sign In</span>}
+              </button>
+            </div>
+          )}
         </div>
       </aside>
     </>

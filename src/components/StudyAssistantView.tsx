@@ -16,14 +16,23 @@ import {
   ChevronRight,
   ListOrdered,
   Calendar,
+  Menu,
 } from 'lucide-react';
 import { marked } from 'marked';
 
 interface StudyAssistantViewProps {
   currentUser: User;
+  onPlanUpdated?: () => void;
+  onOpenMobileMenu?: () => void;
+  onToggleDesktopSidebar?: () => void;
 }
 
-export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentUser }) => {
+export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({
+  currentUser,
+  onPlanUpdated,
+  onOpenMobileMenu,
+  onToggleDesktopSidebar,
+}) => {
   const [activeTab, setActiveTab] = useState<'explain' | 'math' | 'exam' | 'planner'>('explain');
 
   // Concept Explainer state
@@ -156,6 +165,7 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
       if (data.plan) {
         setPlans((prev) => [data.plan, ...prev]);
         setNewPlanSubject('');
+        if (onPlanUpdated) onPlanUpdated();
       }
     } catch (err) {
       console.error(err);
@@ -182,6 +192,8 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
       )
     );
 
+    if (onPlanUpdated) onPlanUpdated();
+
     try {
       await fetch(`/api/study/plans/${plan.id}`, {
         method: 'PATCH',
@@ -201,6 +213,7 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
     try {
       await fetch(`/api/study/plans/${planId}`, { method: 'DELETE' });
       setPlans((prev) => prev.filter((p) => p.id !== planId));
+      if (onPlanUpdated) onPlanUpdated();
     } catch (e) {
       console.error(e);
     }
@@ -209,20 +222,41 @@ export const StudyAssistantView: React.FC<StudyAssistantViewProps> = ({ currentU
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-950 text-slate-100 overflow-hidden">
       {/* Header */}
-      <header className="p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
+      <header className="p-4 md:p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white tracking-tight">
-                Study Assistant & Academic Accelerator
-              </h1>
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                AI Learning Suite
-              </span>
+          <div className="flex items-center gap-3">
+            {onOpenMobileMenu && (
+              <button
+                onClick={onOpenMobileMenu}
+                aria-label="Open navigation menu"
+                className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            )}
+            {onToggleDesktopSidebar && (
+              <button
+                onClick={onToggleDesktopSidebar}
+                aria-label="Toggle navigation menu"
+                className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                title="Toggle sidebar menu"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+            )}
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-white tracking-tight">
+                  Study Assistant & Academic Accelerator
+                </h1>
+                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  AI Learning Suite
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Deep concept explanations, step-by-step mathematical problem solving, practice MCQs, and custom revision planners.
+              </p>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              Deep concept explanations, step-by-step mathematical problem solving, practice MCQs, and custom revision planners.
-            </p>
           </div>
 
           {/* Module Tabs */}

@@ -57,3 +57,37 @@ test('analytics calculation provides valid numbers', () => {
   assert.ok(analytics.indexedDocuments > 0);
   assert.ok(analytics.averageRatingScore >= 0 && analytics.averageRatingScore <= 100);
 });
+
+test('user-specific KPI stats calculate accurately from dynamic database state', () => {
+  const users = db.getUsers();
+  const student = users.find((u) => u.role === 'student')!;
+
+  const stats = db.getUserStats(student.id);
+  assert.equal(typeof stats.totalConversations, 'number');
+  assert.equal(typeof stats.questionsAnswered, 'number');
+  assert.equal(typeof stats.savedResponses, 'number');
+  assert.equal(typeof stats.studyProgress, 'number');
+  assert.ok(stats.totalConversations >= 1, 'Initial seeded conversation exists');
+  assert.ok(stats.questionsAnswered >= 1, 'Initial seeded assistant message exists');
+  assert.ok(stats.savedResponses >= 1, 'Initial seeded saved response exists');
+  assert.ok(stats.studyProgress >= 0 && stats.studyProgress <= 100);
+});
+
+test('user registration and retrieval by email works properly', () => {
+  const testEmail = `test.user.${Date.now()}@uniassist.edu`;
+  const created = db.createUser({
+    fullName: 'Fatima Noor',
+    email: testEmail,
+    role: 'student',
+    department: 'Artificial Intelligence',
+    university: 'UniAssist Metropolitan University',
+  });
+
+  assert.ok(created.id);
+  assert.equal(created.fullName, 'Fatima Noor');
+  assert.equal(created.email, testEmail);
+
+  const found = db.getUserByEmail(testEmail);
+  assert.ok(found);
+  assert.equal(found?.id, created.id);
+});

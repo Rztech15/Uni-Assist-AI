@@ -648,6 +648,58 @@ class Database {
     return item;
   }
 
+  // User-specific KPI Statistics
+  getUserStats(userId: string): {
+    totalConversations: number;
+    questionsAnswered: number;
+    savedResponses: number;
+    studyProgress: number;
+    activeStudyPlans: number;
+    completedTasks: number;
+    totalTasks: number;
+  } {
+    const userConvs = this.data.conversations.filter((c) => c.userId === userId);
+    const userConvIds = new Set(userConvs.map((c) => c.id));
+    
+    // Total user conversations
+    const totalConversations = userConvs.length;
+
+    // Questions answered by AI in user's conversations
+    const questionsAnswered = this.data.messages.filter(
+      (m) => userConvIds.has(m.conversationId) && m.role === 'assistant'
+    ).length;
+
+    // Saved responses bookmarked by user
+    const savedResponses = this.data.savedResponses.filter((s) => s.userId === userId).length;
+
+    // Study plans and aggregate progress
+    const userPlans = this.data.studyPlans.filter((p) => p.userId === userId);
+    let totalProgress = 0;
+    let completedTasks = 0;
+    let totalTasks = 0;
+
+    userPlans.forEach((plan) => {
+      totalProgress += plan.progress || 0;
+      if (plan.schedule && Array.isArray(plan.schedule)) {
+        totalTasks += plan.schedule.length;
+        completedTasks += plan.schedule.filter((item) => item.completed).length;
+      }
+    });
+
+    const studyProgress =
+      userPlans.length > 0 ? Math.round(totalProgress / userPlans.length) : 0;
+
+    return {
+      totalConversations,
+      questionsAnswered,
+      savedResponses,
+      studyProgress,
+      activeStudyPlans: userPlans.length,
+      completedTasks,
+      totalTasks,
+    };
+  }
+
   // Analytics for Admin Dashboard
   getAnalytics(): AdminAnalytics {
     const totalUsers = this.data.users.length;

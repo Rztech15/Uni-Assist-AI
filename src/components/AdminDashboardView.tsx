@@ -15,16 +15,21 @@ import {
   Layers,
   Database,
   BarChart3,
+  Menu,
 } from 'lucide-react';
 
 interface AdminDashboardViewProps {
   currentUser: User;
   onSwitchToAdminRole: () => void;
+  onOpenMobileMenu?: () => void;
+  onToggleDesktopSidebar?: () => void;
 }
 
 export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   currentUser,
   onSwitchToAdminRole,
+  onOpenMobileMenu,
+  onToggleDesktopSidebar,
 }) => {
   const [analytics, setAnalytics] = useState<AdminAnalytics | null>(null);
   const [userList, setUserList] = useState<User[]>([]);
@@ -127,19 +132,40 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-950 text-slate-100 overflow-hidden">
       {/* Header */}
-      <header className="p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              University Administration Dashboard
-            </h1>
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-              Registrar & Super Admin View
-            </span>
+      <header className="p-4 md:p-6 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              aria-label="Open navigation menu"
+              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          {onToggleDesktopSidebar && (
+            <button
+              onClick={onToggleDesktopSidebar}
+              aria-label="Toggle navigation menu"
+              className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              title="Toggle sidebar menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">
+                University Administration Dashboard
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                Registrar & Super Admin View
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Real-time system telemetry, vector storage health, user permissions, and document ingestion status.
+            </p>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time system telemetry, vector storage health, user permissions, and document ingestion status.
-          </p>
         </div>
 
         <button
